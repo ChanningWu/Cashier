@@ -1,0 +1,44 @@
+﻿@page
+@model Cashier.Pages.OrdersModel
+
+<h2>订单查询</h2>
+
+<form method="get">
+    <label>
+        开始时间:
+        <input type="date" name="StartDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+    </label>
+    <label>
+        结束时间:
+        <input type="date" name="EndDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+    </label>
+    <button type="submit">筛选</button>
+</form>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>订单号</th>
+            <th>来源</th>
+            <th>金额</th>
+            <th>支付方式</th>
+            <th>通知地址</th>
+            <th>客户端IP</th>
+            <th>创建时间</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model.Orders)
+        {
+            <tr>
+                <td>@o.MerchantOrderId</td>
+                <td>@o.User</td>
+                <td>@o.Amount</td>
+                <td>@o.PaymentMethod</td>
+                <td>@o.NotifyUrl</td>
+                <td>@o.ClientIp</td>
+                <td>@o.CreatedAt</td>
+            </tr>
+        }
+    </tbody>
+</table>

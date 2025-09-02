@@ -1,0 +1,10 @@
+<project outputDir="D:\Code\Cashier\Cashier\bin\Release\net8.0\publish\Confused" baseDir="D:\Code\Cashier\Cashier\bin\Release\net8.0\publish" xmlns="http://confuser.codeplex.com">
+  <module path="Cashier.dll">
+    <rule pattern="true" preset="maximum">
+      <protection id="rename" />
+      <protection id="resources" />
+      <protection id="ctrl flow" />
+      <protection id="anti tamper" />
+    </rule>
+  </module>
+</project>

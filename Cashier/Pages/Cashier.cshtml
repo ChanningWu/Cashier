@@ -1,0 +1,208 @@
+﻿@page
+@model Cashier.Pages.CashierModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <title>支付宝订单</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7f7f7;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px #0001;
+            padding: 32px 24px 16px 24px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 32px;
+        }
+
+        .amount-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .amount-label {
+            font-size: 2.2rem;
+            color: #1890ff;
+            margin-right: 8px;
+        }
+
+        .amount-input {
+            font-size: 2.2rem;
+            width: 180px;
+            border: none;
+            border-bottom: 2px solid #1890ff;
+            outline: none;
+            text-align: left;
+            background: transparent;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 56px);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .key-btn {
+            font-size: 1.4rem;
+            border: none;
+            border-radius: 8px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .key-btn:active {
+                background: #e0e0e0;
+            }
+
+            .key-btn.confirm {
+                background: #1890ff;
+                color: #fff;
+                grid-row: 2 / span 3;
+                grid-column: 4;
+                font-size: 1.2rem;
+                writing-mode: vertical-lr;
+            }
+
+                .key-btn.confirm:disabled {
+                    background: #b3d8fd;
+                    color: #fff;
+                    cursor: not-allowed;
+                }
+
+            .key-btn.zero {
+                grid-row: 4;
+                grid-column: 1 / span 3;
+            }
+
+            .key-btn.del {
+                background: #ff7875;
+                color: #fff;
+            }
+
+        .error {
+            color: #ff4d4f;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    @if (Model.ShowCreate)
+    {
+        <div class="container">
+            <div class="title">支付宝订单</div>
+            <form id="orderForm" method="post">
+                @Html.AntiForgeryToken()
+                <div class="amount-row">
+                    <span class="amount-label">￥</span>
+                    <input id="amountInput" name="Amount" class="amount-input" type="text" autocomplete="off" inputmode="numeric" pattern="^\d+$" maxlength="9" readonly />
+                </div>
+                <div class="error" id="amountError" style="display:none;"></div>
+                <div class="keypad">
+                    <button type="button" class="key-btn" data-key="7">7</button>
+                    <button type="button" class="key-btn" data-key="8">8</button>
+                    <button type="button" class="key-btn" data-key="9">9</button>
+                    <button type="button" class="key-btn del" data-key="del">删除</button>
+                    <button type="button" class="key-btn" data-key="4">4</button>
+                    <button type="button" class="key-btn" data-key="5">5</button>
+                    <button type="button" class="key-btn" data-key="6">6</button>
+                    <button type="submit" class="key-btn confirm" id="confirmBtn" disabled rowspan="3">确认</button>
+                    <button type="button" class="key-btn" data-key="1">1</button>
+                    <button type="button" class="key-btn" data-key="2">2</button>
+                    <button type="button" class="key-btn" data-key="3">3</button>
+                    <button type="button" class="key-btn" style="visibility:hidden"></button>
+                    <button type="button" class="key-btn zero" data-key="0">0</button>
+                </div>
+            </form>
+        </div>
+    }
+    <script>
+        (function () {
+            const input = document.getElementById('amountInput');
+            const error = document.getElementById('amountError');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const form = document.getElementById('orderForm');
+            let value = "";
+
+            function validate(val) {
+                if (!val) return false;
+                if (!/^\d+$/.test(val)) return false;
+                if (parseInt(val) <= 0) return false;
+                return true;
+            }
+
+            function update() {
+                input.value = value;
+                if (validate(value)) {
+                    error.style.display = "none";
+                    confirmBtn.disabled = false;
+                } else {
+                    if (value && !/^\d+$/.test(value)) {
+                        error.textContent = "请输入正整数";
+                        error.style.display = "";
+                    } else if (value && parseInt(value) === 0) {
+                        error.textContent = "金额必须大于0";
+                        error.style.display = "";
+                    } else {
+                        error.style.display = "none";
+                    }
+                    confirmBtn.disabled = true;
+                }
+            }
+
+            document.querySelectorAll('.key-btn[data-key]').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const key = btn.getAttribute('data-key');
+                    if (key === 'del') {
+                        value = value.slice(0, -1);
+                    } else {
+                        if (value === "0") value = "";
+                        if (value.length < 9) value += key;
+                    }
+                    update();
+                });
+            });
+
+            // 禁止手动输入
+            input.addEventListener('keydown', function (e) { e.preventDefault(); });
+
+            // 表单提交
+            form.addEventListener('submit', function (e) {
+                if (!validate(value)) {
+                    e.preventDefault();
+                    return;
+                }
+                // 自动提交，后端 OnPostAsync 返回 Redirect，浏览器会自动跳转
+                // 可选：提交时禁用按钮防止重复提交
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = "提交中...";
+            });
+
+            update();
+        })();
+    </script>
+</body>
+</html>

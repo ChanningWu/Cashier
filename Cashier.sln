@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cashier", "Cashier\Cashier.csproj", "{0E73A105-4261-4225-B1C2-1E01BD854774}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControlClient", "AccessControlClient\AccessControlClient.csproj", "{F40EF40B-ACB9-4E8C-B940-12500B056A9C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E73A105-4261-4225-B1C2-1E01BD854774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E73A105-4261-4225-B1C2-1E01BD854774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E73A105-4261-4225-B1C2-1E01BD854774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E73A105-4261-4225-B1C2-1E01BD854774}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F40EF40B-ACB9-4E8C-B940-12500B056A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F40EF40B-ACB9-4E8C-B940-12500B056A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F40EF40B-ACB9-4E8C-B940-12500B056A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F40EF40B-ACB9-4E8C-B940-12500B056A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B55E6EE-E91B-4F0B-BC9D-267509817CE5}
+	EndGlobalSection
+EndGlobal
