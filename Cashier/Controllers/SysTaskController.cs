@@ -75,8 +75,9 @@ namespace Cashier.Controllers
             if (!_accessControl.ValidateSecret(key))
                 return Unauthorized();
 
-            return Ok(new { open = _accessControl.IsOpen, expire = _accessControl.ExpireAt });
+            return Ok(new { open = _accessControl.IsOpen, expire = _accessControl.ExpireAt, timeLeft = (_accessControl.ExpireAt - DateTime.Now).ToChineseString() });
         }
+
     }
 
     public record OpenRequest(int Days, string Secret);

@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "比较结构";
+    var tableName = ViewBag.TableName as string;
+    var entityCols = ViewBag.EntityCols as List<dynamic> ?? new List<dynamic>();
+    var existingCols = ViewBag.ExistingCols as List<string> ?? new List<string>();
+    var missingInDb = ViewBag.MissingInDb as List<dynamic> ?? new List<dynamic>();
+    var extraInDb = ViewBag.ExtraInDb as List<string> ?? new List<string>();
+    var dbSetName = ViewBag.DbSetName as string;
+    var syncResult = TempData["SyncResult"] as string;
+}
+
+<h2>表: @tableName</h2>
+
+@if (!string.IsNullOrEmpty(syncResult))
+{
+    <div style="color:green;font-weight:bold">操作结果: @syncResult</div>
+}
+
+<h3>实体结构</h3>
+<ul>
+    @foreach (var col in entityCols)
+    {
+        <li>@col.Name (@col.Type)</li>
+    }
+</ul>
+
+<h3>数据库已有字段</h3>
+<ul>
+    @foreach (var col in existingCols)
+    {
+        <li>@col</li>
+    }
+</ul>
+
+<h3>缺失字段（需要新增）</h3>
+@if (missingInDb.Any())
+{
+    <ul>
+        @foreach (var col in missingInDb)
+        {
+            <li>@col.Name (@col.Type)</li>
+        }
+    </ul>
+}
+else
+{
+    <p>无缺失字段。</p>
+}
+
+<h3>额外字段（数据库多余的）</h3>
+@if (extraInDb.Any())
+{
+    <ul>
+        @foreach (var col in extraInDb)
+        {
+            <li>@col</li>
+        }
+    </ul>
+}
+else
+{
+    <p>无额外字段。</p>
+}
+
+<form method="post" asp-action="SyncOne">
+    <input type="hidden" name="dbSetName" value="@dbSetName" />
+    <button type="submit">执行同步</button>
+</form>

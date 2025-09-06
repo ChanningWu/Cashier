@@ -26,6 +26,7 @@ namespace Cashier.Controllers
             // 生成唯一订单号
             request.MerchantOrderId = string.IsNullOrEmpty(request.MerchantOrderId) ? Guid.NewGuid().ToString("N") : request.MerchantOrderId;
             request.CreatedAt = DateTime.Now;
+            request.Status = "Pending";
             _db.PaymentRequests.Add(request);
             _db.SaveChanges();
 

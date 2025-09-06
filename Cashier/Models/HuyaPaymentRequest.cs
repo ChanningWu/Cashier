@@ -29,5 +29,9 @@ namespace Cashier.Models
         public string? ClientIp { get; set; }
         [JsonIgnore]
         public DateTime CreatedAt { get; internal set; }
+        [JsonIgnore]
+        public string Status { get; internal set; }
+        [JsonIgnore]
+        public string Message { get; internal set; }
     }
 }

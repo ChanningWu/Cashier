@@ -16,7 +16,7 @@ namespace Cashier
             builder.Services.AddRazorPages();
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlite("Data Source=cashier.db"));
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // ×¢²á·þÎñ
             builder.Services.AddScoped<HuyaOrderService>();

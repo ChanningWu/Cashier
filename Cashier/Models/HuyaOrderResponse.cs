@@ -17,5 +17,11 @@ namespace Cashier.Models
 
         [JsonPropertyName("pendingId")]
         public string PendingId { get; set; }
+
+        [JsonPropertyName("success")]
+        public bool Success { get; set; } = true;
+
+        [JsonPropertyName("errorMsg")]
+        public string ErrorMsg { get; set; }
     }
 }

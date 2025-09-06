@@ -13,10 +13,10 @@ namespace Cashier.Pages
 
         // Ê±¼ä¹ýÂË
         [BindProperty(SupportsGet = true)]
-        public DateTime? StartDate { get; set; } = DateTime.Today.AddDays(-30);
+        public DateTime? StartDate { get; set; } = DateTime.Today.AddDays(-7);
 
         [BindProperty(SupportsGet = true)]
-        public DateTime? EndDate { get; set; }
+        public DateTime? EndDate { get; set; } = DateTime.Today;
 
         public OrdersModel(AppDbContext db)
         {

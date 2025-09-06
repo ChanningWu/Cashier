@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Cashier.Models;
 
 namespace Cashier.Common
 {
@@ -101,18 +102,26 @@ namespace Cashier.Common
     Dictionary<string, string>? headers = null,
     JsonSerializerOptions? options = null)
         {
-            options ??= new JsonSerializerOptions
+            try
             {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            };
+                options ??= new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                };
 
-            string json = JsonSerializer.Serialize(body, options);
-            using var content = new StringContent(json, Encoding.UTF8, "application/json");
-            using var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
-            AddHeaders(request, headers);
-            using var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+                string json = JsonSerializer.Serialize(body, options);
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                using var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
+                AddHeaders(request, headers);
+                using var response = await _httpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                return JsonSerializer.Serialize(new HuyaOrderResponse { Success = false, ErrorMsg = ex.Message });
+            }
+            
         }
     }
 }
