@@ -1,7 +1,9 @@
 ﻿using System;
+using Cashier.Common;
 using Cashier.Data;
 using Cashier.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cashier.Controllers
 {
@@ -21,15 +23,26 @@ namespace Cashier.Controllers
         {
             if (request == null|| request.Amount <= 0)
             {
+                LogHelper.Warn("CreateCashier: Invalid request data: Amount <= 0");
                 return BadRequest("Invalid request data.");
             }
             // 生成唯一订单号
             request.MerchantOrderId = string.IsNullOrEmpty(request.MerchantOrderId) ? Guid.NewGuid().ToString("N") : request.MerchantOrderId;
+            var cashierUrl = "";
+            var orderInDb = _db.PaymentRequests.FirstOrDefault(x => x.MerchantOrderId == request.MerchantOrderId);
+            if (orderInDb != null)
+            {
+                LogHelper.Warn($"CreateCashier: 订单号:{request.MerchantOrderId} 已存在, 下单时间：{orderInDb.CreatedAt:G}");
+                cashierUrl = $"{Request.Scheme}://{Request.Host}/Cashier?orderId={request.MerchantOrderId}";
+                return Ok(new { paymentUrl = cashierUrl, orderId = request.MerchantOrderId });
+            }
             request.CreatedAt = DateTime.Now;
             _db.PaymentRequests.Add(request);
             _db.SaveChanges();
 
-            var cashierUrl = $"{Request.Scheme}://{Request.Host}/Cashier?orderId={request.MerchantOrderId}";
+            LogHelper.Info($"CreateCashier: 订单号:{request.MerchantOrderId} 创建成功.");
+
+            cashierUrl = $"{Request.Scheme}://{Request.Host}/Cashier?orderId={request.MerchantOrderId}";
 
             return Ok(new { paymentUrl = cashierUrl, orderId = request.MerchantOrderId });
         }
