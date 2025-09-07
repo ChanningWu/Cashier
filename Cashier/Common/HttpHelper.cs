@@ -13,7 +13,7 @@ namespace Cashier.Common
         {
             _httpClient = new HttpClient
             {
-                Timeout = TimeSpan.FromSeconds(30) // 默认超时10秒
+                Timeout = TimeSpan.FromSeconds(30) // 默认超时30秒
             };
         }
 
@@ -24,16 +24,22 @@ namespace Cashier.Common
         {
             try
             {
+                LogHelper.Info($"GET:{url}");
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 AddHeaders(request, headers);
 
                 using var response = await _httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
+                var res = await response.Content.ReadAsStringAsync();
+
+                LogHelper.Info($"GET: {url}结束, response:{Environment.NewLine}{res}");
+
+                return res;
             }
             catch (Exception ex)
             {
-                return $"[GET Error] {ex.Message}";
+                LogHelper.Info($"GET: {url} Error, Exception:{Environment.NewLine}{JsonSerializer.Serialize(ex)}");
+                return null;
             }
         }
 
@@ -110,18 +116,25 @@ namespace Cashier.Common
                 };
 
                 string json = JsonSerializer.Serialize(body, options);
+
+                LogHelper.Info($"开始请求{url}进行下单, request:{Environment.NewLine}{json}");
+
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
                 using var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
                 AddHeaders(request, headers);
                 using var response = await _httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
+                var res = await response.Content.ReadAsStringAsync();
+
+                LogHelper.Info($"请求{url}下单结束, response:{Environment.NewLine}{res}");
+
+                return res;
             }
             catch (Exception ex)
             {
+                LogHelper.Info($"请求{url}下单失败, Exception:{Environment.NewLine}{JsonSerializer.Serialize(ex)}");
                 return JsonSerializer.Serialize(new HuyaOrderResponse { Success = false, ErrorMsg = ex.Message });
             }
-            
         }
     }
 }
