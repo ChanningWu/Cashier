@@ -30,8 +30,8 @@ namespace Cashier.Models
         [JsonIgnore]
         public DateTime CreatedAt { get; internal set; }
         [JsonIgnore]
-        public string Status { get; internal set; }
+        public string? Status { get; internal set; } = "";
         [JsonIgnore]
-        public string Message { get; internal set; }
+        public string? Message { get; internal set; } = "";
     }
 }

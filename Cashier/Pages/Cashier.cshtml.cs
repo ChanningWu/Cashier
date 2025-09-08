@@ -122,7 +122,7 @@ namespace Cashier.Pages
             }
 
             order.Status = "Successed";
-            _db.PaymentRequests.Add(order);
+            _db.PaymentRequests.Update(order);
             await _db.SaveChangesAsync();
             // 直接跳转到支付页面
             LogHelper.Info($"Cashier: 订单号:{order.MerchantOrderId} 创建支付订单成功 跳转到支付页面. payUrl:{response.PaymentUrl}");

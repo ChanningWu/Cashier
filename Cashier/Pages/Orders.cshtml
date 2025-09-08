@@ -2,8 +2,19 @@
 @model Cashier.Pages.OrdersModel
 
 <style>
+    /* 筛选表单固定在页面顶部 */
+    .filter-form {
+        position: sticky;
+        top: 0;
+        background: #fff;
+        padding: 10px;
+        z-index: 102; /* 高于表头 */
+        border-bottom: 1px solid #ccc;
+    }
+
     table.order-table {
         width: 100%;
+        min-width: 100%;
         border-collapse: collapse;
         table-layout: fixed;
     }
@@ -13,25 +24,18 @@
         border: 1px solid #ccc;
         padding: 5px;
         text-align: center;
-        word-wrap: break-word;
-        overflow: hidden;
-        white-space: normal;
+        /*white-space: nowrap;      /* 单行显示 */
+        overflow: auto;
     }
 
     table.order-table tr {
-        height: 40px; /* 固定两行高度 */
-        line-height: 20px; /* 一行文字高度 */
-    }
-
-    table.order-table thead {
-        background-color: #f5f5f5;
-        font-weight: bold;
+        line-height: 20px;
     }
 </style>
 
 <h2>订单查询</h2>
 
-<form method="get">
+<form method="get" class="filter-form">
     <label>
         开始时间:
         <input type="date" name="StartDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
@@ -43,34 +47,36 @@
     <button type="submit">筛选</button>
 </form>
 
-<table class="order-table" border="1" cellpadding="5">
-    <thead>
-        <tr>
-            <th style="width:15.6%">订单号</th>
-            <th style="width:5.8%">来源</th>
-            <th style="width:0.4%">金额</th>
-            <th style="width:2%">支付方式</th>
-            <th style="width:31.2%">通知地址</th>
-            <th style="width:7.8%">客户端IP</th>
-            <th style="width:5.8%">创建时间</th>
-            <th style="width:3.9%">状态</th>
-            <th style="width:23.4%">错误信息</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var o in Model.Orders)
-        {
+<div class="order-container">
+    <table class="order-table">
+        <thead>
             <tr>
-                <td>@o.MerchantOrderId</td>
-                <td>@o.User</td>
-                <td>@o.Amount</td>
-                <td>@o.PaymentMethod</td>
-                <td>@o.NotifyUrl</td>
-                <td>@o.ClientIp</td>
-                <td>@o.CreatedAt</td>
-                <td>@o.Status</td>
-                <td>@o.Message</td>
+                <th style="width:16%">订单号</th>
+                <th style="width:6%">来源</th>
+                <th style="width:4%">金额</th>
+                <th style="width:6%">支付方式</th>
+                <th style="width:8%">客户端IP</th>
+                <th style="width:12%">创建时间</th>
+                <th style="width:8%">状态</th>
+                <th style="width:20%">错误信息</th>
+                <th style="width:22%">通知地址</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var o in Model.Orders)
+            {
+                <tr>
+                    <td>@o.MerchantOrderId</td>
+                    <td>@o.User</td>
+                    <td>@o.Amount</td>
+                    <td>@o.PaymentMethod</td>
+                    <td>@o.ClientIp</td>
+                    <td>@o.CreatedAt.ToString("G")</td>
+                    <td>@o.Status</td>
+                    <td>@o.Message</td>
+                    <td>@o.NotifyUrl</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

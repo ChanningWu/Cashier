@@ -12,10 +12,12 @@ namespace Cashier.Controllers
     public class CashierController : ControllerBase
     {
         private readonly AppDbContext _db;
+        private readonly DelayedTaskScheduler _scheduler;
 
-        public CashierController(AppDbContext db)
+        public CashierController(AppDbContext db, DelayedTaskScheduler scheduler)
         {
             _db = db;
+            _scheduler = scheduler;
         }
 
         [HttpPost("create")]
@@ -41,6 +43,7 @@ namespace Cashier.Controllers
             _db.PaymentRequests.Add(request);
             _db.SaveChanges();
 
+            _scheduler.Schedule(request.MerchantOrderId);
             LogHelper.Info($"CreateCashier: 订单号:{request.MerchantOrderId} 创建成功.");
 
             cashierUrl = $"{Request.Scheme}://{Request.Host}/Cashier?orderId={request.MerchantOrderId}";
